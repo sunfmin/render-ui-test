@@ -1,13 +1,13 @@
 ---
 name: render-ui-test
-description: Render project UI to PNG from a TEST (not a script or one-off exec method) with least code, by mocking UI data at LOWEST layer so every real project code path runs. Builds reusable render-glue helper for future tests. Use when asked to render UI to image, screenshot a component/page/view, set up snapshot/visual tests, or "see what the UI looks like" without running the full app.
+description: Render project UI to PNG from a TEST — not a script, main(), or one-off exec method — with least code, by mocking data at the LOWEST seam so every real project code path runs. Builds a reusable render-glue helper for future tests. Use when asked to render or screenshot a component/page/view to an image, set up snapshot/visual tests, or "see what the UI looks like" without launching the app.
 ---
 
 # render-ui-test
 
 Goal: one PNG of **real** UI, from a **test**. Least code. Real code path. Glue -> reusable helper.
 
-Deliverable is a test in project's test framework — not a standalone script, not a `main()`, not a one-off exec method. Render runs when test runs.
+Deliverable is a test in the project's test framework — not a script, `main()`, or one-off exec method. A script renders once and is thrown away; a test renders on every run and its content asserts **guard** the behavior forever (rule 4).
 
 ## Rules
 
@@ -23,7 +23,7 @@ Deliverable is a test in project's test framework — not a standalone script, n
 3. **Write helper** (see template). One mock impl -> canned data. One render call. One file write.
 4. **Write test** — test fn picks subject, overrides mock data, calls helper. This is the deliverable.
 5. **Render** — run the test. Project's native offscreen/headless path turns view into pixels. No app launch, no server.
-6. **Eyeball + assert content** — test writes `out/<name>.png`, open, confirm real component + mock data showing. Then bake the must-show content into asserts on the view/tree (mock name visible, right row count, key node present). Blank/wrong -> seam too high or entry wrong -> back to 1–2.
+6. **Eyeball + assert (rule 4)** — test writes `out/<name>.png`; open it, confirm real component + mock data show. Blank/wrong -> seam too high or entry wrong -> back to 1–2. Then bake the must-show content into asserts before done.
 
 ## Helper template (pseudocode)
 
@@ -50,11 +50,10 @@ Test_RendersLoginPage:
 
 New test = pick subject + override `fakeData()` -> call `RenderToImage` + assert key content. Done.
 
-Query API is whatever project gives: testing-library `getByText`, HTML-string `contains`, render-tree walk, view snapshot. Pick must-show items only — name, row count, key node — not every pixel/field.
+Query API is whatever the project gives: testing-library `getByText`, HTML-string `contains`, render-tree walk, view snapshot.
 
 ## Keep small
 
-- It's a real test, runs in test framework. Render first to see it, then add content asserts before done.
-- Assert the logic's must-show output (text, node, count) — not pixels. Pixel/snapshot diff optional, add later.
-- One mock struct, hardcoded data. No mock libs unless seam needs.
-- Render entry needs many deps = smell. Inject one data seam, default rest.
+- One mock struct, hardcoded data. No mock libs unless the seam needs them.
+- Render entry needs many deps = smell. Inject one data seam, default the rest.
+- Pixel/snapshot diff is optional — add it later; content asserts first.
