@@ -1,9 +1,9 @@
 ---
-name: render-ui-snapshot
+name: render-ui-test
 description: Render project UI to PNG from a TEST (not a script or one-off exec method) with least code, by mocking UI data at LOWEST layer so every real project code path runs. Builds reusable render-glue helper for future tests. Use when asked to render UI to image, screenshot a component/page/view, set up snapshot/visual tests, or "see what the UI looks like" without running the full app.
 ---
 
-# render-ui-snapshot
+# render-ui-test
 
 Goal: one PNG of **real** UI, from a **test**. Least code. Real code path. Glue -> reusable helper.
 
